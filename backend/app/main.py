@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from .auth import admin_user, create_session, current_user, hash_password, seed_users, verify_password
 from .db import connect, migrate
-from .metadata import detail as metadata_detail, known_link, search as metadata_search, valid_http_url
+from .metadata import detail as metadata_detail, key_for, known_link, search as metadata_search, valid_http_url
 
 load_dotenv()
 
@@ -267,10 +267,10 @@ def create_app():
             raise HTTPException(422, 'Invalid URL')
         match = known_link(url)
         if not match:
-            return {'available': False, 'item': None, 'message': 'Unknown link; use manual entry'}
+            return {'available': False, 'item': None, 'reason': 'unknown_link', 'message': 'Unknown link; use manual entry'}
         kind, source, external_id = match
         item = metadata_detail(kind, source, external_id, user['language'])
-        return {'available': bool(item), 'item': item, 'message': '' if item else 'Metadata unavailable; use manual entry'}
+        return {'available': bool(item), 'item': item, 'reason': None if item else ('missing_key' if not key_for(kind) else 'upstream_error'), 'message': '' if item else 'Metadata unavailable; use manual entry'}
 
     @app.get('/api/users')
     def list_users(user=Depends(admin_user)):

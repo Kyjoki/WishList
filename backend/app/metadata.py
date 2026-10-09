@@ -62,7 +62,7 @@ def normalize_rawg(row: dict) -> dict:
 def search(kind: str, query: str, language: str):
     key = key_for(kind)
     if not key:
-        return {'available': False, 'results': [], 'message': 'API key is not configured'}
+        return {'available': False, 'results': [], 'reason': 'missing_key', 'message': 'API key is not configured'}
     try:
         with httpx.Client(timeout=7) as client:
             if kind == 'game':
@@ -76,9 +76,9 @@ def search(kind: str, query: str, language: str):
                     'include_adult': 'false'})
                 result.raise_for_status()
                 rows = [normalize_tmdb(row, kind) for row in result.json().get('results', [])[:8]]
-        return {'available': True, 'results': rows, 'message': ''}
+        return {'available': True, 'results': rows, 'reason': None, 'message': ''}
     except (httpx.HTTPError, ValueError, KeyError):
-        return {'available': False, 'results': [], 'message': 'Metadata service unavailable'}
+        return {'available': False, 'results': [], 'reason': 'upstream_error', 'message': 'Metadata service unavailable'}
 
 
 def detail(kind: str, source: str, external_id: str, language: str):

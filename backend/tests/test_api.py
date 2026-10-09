@@ -60,6 +60,7 @@ def test_invalid_link_and_manual_fallback(tmp_path, monkeypatch):
         response = c.get('/api/metadata/search', params={'kind': 'movie', 'query': 'Arrival'})
         assert response.status_code == 200
         assert response.json()['available'] is False
+        assert response.json()['reason'] == 'missing_key'
 
 
 def test_language_and_random(tmp_path, monkeypatch):
