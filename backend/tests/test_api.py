@@ -5,6 +5,8 @@ from fastapi.testclient import TestClient
 
 def client(tmp_path, monkeypatch):
     monkeypatch.setenv('DATABASE_PATH', str(tmp_path / 'test.db'))
+    monkeypatch.setenv('TMDB_API_KEY', '')
+    monkeypatch.setenv('RAWG_API_KEY', '')
     monkeypatch.setenv('ADMIN_USERNAME', 'admin')
     monkeypatch.setenv('ADMIN_PASSWORD', 'admin-password-long')
     monkeypatch.setenv('FRIEND_USERNAME', 'friend')
