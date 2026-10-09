@@ -1,0 +1,40 @@
+export const copy = {
+  ru: {
+    watch: 'Смотреть', play: 'Играть', all: 'Всё', collection: 'Коллекция', manage: 'Управление', settings: 'Настройки', users: 'Пользователи',
+    login: 'Войти', logout: 'Выйти', username: 'Логин', password: 'Пароль', welcome: 'Ваши общие планы, в одном месте.',
+    subtitle: 'Выбирайте вместе. Сохраняйте идеи. Не тратьте вечер на поиски.', explore: 'Исследовать коллекцию', add: 'Добавить', addNew: 'Добавить в коллекцию',
+    search: 'Поиск по названию или жанру', searchMeta: 'Название или ссылка на источник', find: 'Найти', manual: 'Заполнить вручную',
+    wanted: 'Хотим', activeWatch: 'Смотрим', activePlay: 'Играем', done: 'Завершено', paused: 'Отложено', random: 'Выбрать случайное',
+    noItems: 'Пока ничего нет. Добавьте первую идею через раздел управления.', noResults: 'Ничего не найдено.', loading: 'Загрузка…',
+    movie: 'Фильм', series: 'Сериал', game: 'Игра', year: 'Год', type: 'Тип', status: 'Статус', title: 'Название', image: 'Ссылка на изображение',
+    source: 'Ссылка на источник', description: 'Описание', genres: 'Жанры', save: 'Сохранить', cancel: 'Отмена', edit: 'Редактировать', delete: 'Удалить',
+    confirmDelete: 'Удалить запись?', candidates: 'Подходящие варианты', choose: 'Выбрать', verify: 'Проверьте данные перед добавлением',
+    unavailable: 'Поиск метаданных недоступен. Введите данные вручную.', noCandidates: 'Подходящих вариантов нет. Можно заполнить вручную.',
+    note: 'Заметка', notes: 'Заметки друзей', addNote: 'Добавить заметку', history: 'История статуса', noNotes: 'Пока нет заметок.',
+    openSource: 'Открыть источник', language: 'Язык интерфейса', languageSaved: 'Язык сохранён', newUser: 'Новый пользователь', role: 'Роль',
+    admin: 'Администратор', friend: 'Друг', create: 'Создать', resetPassword: 'Новый пароль', apply: 'Применить',
+    introManage: 'Найдите фильм, сериал или игру по названию, вставьте ссылку либо добавьте вручную.',
+    signInTitle: 'Войдите в ваше пространство', signInText: 'Общие планы для двоих начинаются здесь.',
+    retry: 'Повторить', credits: 'Данные и изображения: TMDB и RAWG.',
+    validation: 'Укажите название. Ссылки должны начинаться с http:// или https://.', randomEmpty: 'В разделе «Хотим» пока нет позиций.'
+  },
+  en: {
+    watch: 'Watch', play: 'Play', all: 'All', collection: 'Collection', manage: 'Manage', settings: 'Settings', users: 'Users',
+    login: 'Sign in', logout: 'Sign out', username: 'Username', password: 'Password', welcome: 'Your shared plans, in one place.',
+    subtitle: 'Choose together. Save ideas. Spend less time searching.', explore: 'Explore collection', add: 'Add', addNew: 'Add to collection',
+    search: 'Search by title or genre', searchMeta: 'Title or source link', find: 'Search', manual: 'Enter manually',
+    wanted: 'Want to', activeWatch: 'Watching', activePlay: 'Playing', done: 'Completed', paused: 'Paused', random: 'Pick at random',
+    noItems: 'Nothing here yet. Add your first idea in Manage.', noResults: 'No results found.', loading: 'Loading…',
+    movie: 'Movie', series: 'Series', game: 'Game', year: 'Year', type: 'Type', status: 'Status', title: 'Title', image: 'Image URL',
+    source: 'Source URL', description: 'Description', genres: 'Genres', save: 'Save', cancel: 'Cancel', edit: 'Edit', delete: 'Delete',
+    confirmDelete: 'Delete this entry?', candidates: 'Matching titles', choose: 'Select', verify: 'Check details before adding',
+    unavailable: 'Metadata search is unavailable. Enter details manually.', noCandidates: 'No matching titles. You can enter details manually.',
+    note: 'Note', notes: 'Friends’ notes', addNote: 'Add note', history: 'Status history', noNotes: 'No notes yet.',
+    openSource: 'Open source', language: 'Interface language', languageSaved: 'Language saved', newUser: 'New user', role: 'Role',
+    admin: 'Administrator', friend: 'Friend', create: 'Create', resetPassword: 'New password', apply: 'Apply',
+    introManage: 'Find a movie, series or game by name, paste a link or add one manually.',
+    signInTitle: 'Enter your shared space', signInText: 'Plans for two begin here.',
+    retry: 'Retry', credits: 'Data and images: TMDB and RAWG.',
+    validation: 'Enter a title. URLs must start with http:// or https://.', randomEmpty: 'There are no wanted items yet.'
+  }
+} as const
