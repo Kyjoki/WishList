@@ -8,6 +8,8 @@ backend/*.db-*
 frontend/node_modules/
 frontend/dist/
 frontend/*.tsbuildinfo
+backend/*.log
+frontend/*.log
 .env
 backend/.env
 frontend/.env
