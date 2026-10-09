@@ -74,6 +74,18 @@ def test_language_and_random(tmp_path, monkeypatch):
         assert c.get('/api/items/random', params={'kind': 'game'}).json()['title'] == 'Hades'
 
 
+def test_random_watch_includes_series(tmp_path, monkeypatch):
+    with client(tmp_path, monkeypatch) as c:
+        login(c)
+        headers = {'X-Requested-With': 'PlayWatch'}
+        c.post('/api/items', json={'kind': 'series', 'title': 'Friends', 'status': 'want'}, headers=headers)
+        c.post('/api/items', json={'kind': 'game', 'title': 'Hades', 'status': 'want'}, headers=headers)
+
+        response = c.get('/api/items/random', params={'kind': 'movie'})
+        assert response.status_code == 200
+        assert response.json()['title'] == 'Friends'
+
+
 def test_admin_can_manage_user_without_losing_activity(tmp_path, monkeypatch):
     with client(tmp_path, monkeypatch) as c:
         login(c)

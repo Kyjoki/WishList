@@ -167,9 +167,17 @@ def create_app():
 
     @app.get('/api/items/random')
     def random_item(kind: Kind | None = None, user=Depends(current_user)):
+        sql = 'SELECT * FROM items WHERE status=?'
+        args = ['want']
+        if kind == 'movie':
+            sql += ' AND kind IN (?, ?)'
+            args.extend(['movie', 'series'])
+        elif kind:
+            sql += ' AND kind=?'
+            args.append(kind)
+        sql += ' ORDER BY RANDOM() LIMIT 1'
         with connect() as db:
-            row = db.execute('SELECT * FROM items WHERE status=? AND (? IS NULL OR kind=?) ORDER BY RANDOM() LIMIT 1',
-                             ('want', kind, kind)).fetchone()
+            row = db.execute(sql, args).fetchone()
         if not row:
             raise HTTPException(404, 'No wanted items')
         return dict(row)
