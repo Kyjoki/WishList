@@ -86,6 +86,57 @@ def test_random_watch_includes_series(tmp_path, monkeypatch):
         assert response.json()['title'] == 'Friends'
 
 
+def test_random_respects_search_genre_and_exclusions(tmp_path, monkeypatch):
+    with client(tmp_path, monkeypatch) as c:
+        login(c)
+        headers = {'X-Requested-With': 'PlayWatch'}
+        for item in [
+            {'kind': 'movie', 'title': 'Funny Moon', 'genres': 'Comedy', 'status': 'want'},
+            {'kind': 'series', 'title': 'Funny Friends', 'genres': 'Comedy', 'status': 'want'},
+            {'kind': 'movie', 'title': 'Serious Moon', 'genres': 'Drama', 'status': 'want'},
+            {'kind': 'game', 'title': 'Funny Quest', 'genres': 'Comedy', 'status': 'want'},
+            {'kind': 'movie', 'title': 'Funny Done', 'genres': 'Comedy', 'status': 'done'},
+        ]:
+            assert c.post('/api/items', json=item, headers=headers).status_code == 201
+
+        first = c.get('/api/items/random', params={'kind': 'movie', 'genre': 'Comedy', 'q': 'Funny'})
+        assert first.status_code == 200
+        second = c.get('/api/items/random', params={'kind': 'movie', 'genre': 'Comedy', 'q': 'Funny', 'exclude': first.json()['id']})
+        assert second.status_code == 200
+        assert {first.json()['title'], second.json()['title']} == {'Funny Moon', 'Funny Friends'}
+        exhausted = c.get('/api/items/random', params=[('kind', 'movie'), ('genre', 'Comedy'), ('q', 'Funny'),
+                                                         ('exclude', first.json()['id']), ('exclude', second.json()['id'])])
+        assert exhausted.status_code == 404
+        assert c.get('/api/items/random', params={'kind': 'game', 'genre': 'Comedy'}).json()['title'] == 'Funny Quest'
+        c.post('/api/items', json={'kind': 'series', 'title': 'Луна', 'genres': 'Комедия', 'status': 'want'}, headers=headers)
+        localized = c.get('/api/items/random', params={'kind': 'movie', 'genre': 'комедия', 'q': 'ЛУНА'})
+        assert localized.status_code == 200
+        assert localized.json()['title'] == 'Луна'
+
+
+def test_friends_share_series_progress(tmp_path, monkeypatch):
+    with client(tmp_path, monkeypatch) as c:
+        login(c)
+        headers = {'X-Requested-With': 'PlayWatch'}
+        series_id = c.post('/api/items', json={'kind': 'series', 'title': 'Friends'}, headers=headers).json()['id']
+        movie_id = c.post('/api/items', json={'kind': 'movie', 'title': 'Moon'}, headers=headers).json()['id']
+        c.post('/api/logout', headers=headers)
+        login(c, 'friend', 'friend-password-long')
+
+        updated = c.patch(f'/api/items/{series_id}/progress', json={'season_number': 2, 'episode_number': 5}, headers=headers)
+        assert updated.status_code == 200
+        assert (updated.json()['season_number'], updated.json()['episode_number']) == (2, 5)
+        assert c.get(f'/api/items/{series_id}').json()['episode_number'] == 5
+        listed_series = next(item for item in c.get('/api/items').json() if item['id'] == series_id)
+        assert listed_series['season_number'] == 2
+        assert c.patch(f'/api/items/{series_id}/progress', json={'season_number': 0, 'episode_number': 5}, headers=headers).status_code == 422
+        assert c.patch(f'/api/items/{movie_id}/progress', json={'season_number': 1, 'episode_number': 1}, headers=headers).status_code == 422
+        cleared = c.patch(f'/api/items/{series_id}/progress', json={'season_number': None, 'episode_number': None}, headers=headers)
+        assert cleared.status_code == 200
+        assert cleared.json()['season_number'] is None
+        assert cleared.json()['episode_number'] is None
+
+
 def test_admin_can_manage_user_without_losing_activity(tmp_path, monkeypatch):
     with client(tmp_path, monkeypatch) as c:
         login(c)

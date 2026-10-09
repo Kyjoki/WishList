@@ -7,6 +7,7 @@ export const copy = {
     wanted: 'Хотим', activeWatch: 'Смотрим', activePlay: 'Играем', done: 'Завершено', paused: 'Отложено', random: 'Выбрать случайное',
     noItems: 'Пока ничего нет. Добавьте первую идею через раздел управления.', noResults: 'Ничего не найдено.', loading: 'Загрузка…',
     movie: 'Фильм', series: 'Сериал', game: 'Игра', year: 'Год', type: 'Тип', status: 'Статус', title: 'Название', image: 'Ссылка на изображение',
+    progress: 'Прогресс просмотра', season: 'Сезон', episode: 'Серия', saveProgress: 'Сохранить прогресс', clearProgress: 'Очистить прогресс',
     source: 'Ссылка на источник', description: 'Описание', genres: 'Жанры', save: 'Сохранить', cancel: 'Отмена', edit: 'Редактировать', delete: 'Удалить',
     confirmDelete: 'Удалить запись?', candidates: 'Подходящие варианты', choose: 'Выбрать', verify: 'Проверьте данные перед добавлением',
     unavailable: 'Сервис поиска временно недоступен. Можно заполнить вручную.', noCandidates: 'Подходящих вариантов нет. Можно заполнить вручную.',
@@ -19,7 +20,7 @@ export const copy = {
     introManage: 'Найдите фильм, сериал или игру по названию, вставьте ссылку либо добавьте вручную.',
     signInTitle: 'Войдите в ваше пространство', signInText: 'Общие планы для двоих начинаются здесь.',
     retry: 'Повторить', credits: 'Данные и изображения: TMDB и RAWG.',
-    validation: 'Укажите название. Ссылки должны начинаться с http:// или https://.', randomEmpty: 'В разделе «Хотим» пока нет позиций.'
+    validation: 'Укажите название. Ссылки должны начинаться с http:// или https://.', randomEmpty: 'Нет позиций «Хотим» для текущих фильтров.'
   },
   en: {
     watch: 'Watch', play: 'Play', all: 'All', collection: 'Collection', manage: 'Manage', settings: 'Settings', users: 'Users',
@@ -29,6 +30,7 @@ export const copy = {
     wanted: 'Want to', activeWatch: 'Watching', activePlay: 'Playing', done: 'Completed', paused: 'Paused', random: 'Pick at random',
     noItems: 'Nothing here yet. Add your first idea in Manage.', noResults: 'No results found.', loading: 'Loading…',
     movie: 'Movie', series: 'Series', game: 'Game', year: 'Year', type: 'Type', status: 'Status', title: 'Title', image: 'Image URL',
+    progress: 'Watching progress', season: 'Season', episode: 'Episode', saveProgress: 'Save progress', clearProgress: 'Clear progress',
     source: 'Source URL', description: 'Description', genres: 'Genres', save: 'Save', cancel: 'Cancel', edit: 'Edit', delete: 'Delete',
     confirmDelete: 'Delete this entry?', candidates: 'Matching titles', choose: 'Select', verify: 'Check details before adding',
     unavailable: 'The metadata service is temporarily unavailable. You can enter details manually.', noCandidates: 'No matching titles. You can enter details manually.',
@@ -41,6 +43,6 @@ export const copy = {
     introManage: 'Find a movie, series or game by name, paste a link or add one manually.',
     signInTitle: 'Enter your shared space', signInText: 'Plans for two begin here.',
     retry: 'Retry', credits: 'Data and images: TMDB and RAWG.',
-    validation: 'Enter a title. URLs must start with http:// or https://.', randomEmpty: 'There are no wanted items yet.'
+    validation: 'Enter a title. URLs must start with http:// or https://.', randomEmpty: 'No wanted items match the current filters.'
   }
 } as const

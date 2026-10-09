@@ -21,3 +21,11 @@
 .candidate-list::-webkit-scrollbar-thumb{background:#77718f;border-radius:8px}
 .candidate-list button{width:100%;min-width:0}
 .candidate-list button>svg{flex:none}
+
+.card-progress{display:block;margin-top:6px;color:#b6acff;font-size:12px;font-weight:700}
+.series-progress{border-top:1px solid #343448;padding-top:22px;margin-bottom:32px}
+.series-progress h2{margin-bottom:15px}
+.progress-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.progress-fields label{display:flex;flex-direction:column;gap:7px;color:#a9a8bc;font-size:12px;font-weight:700}
+.progress-fields input{width:100%}
+.progress-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}

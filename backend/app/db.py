@@ -11,6 +11,7 @@ def connect():
     path.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(path)
     db.row_factory = sqlite3.Row
+    db.create_function('CASEFOLD', 1, lambda value: value.casefold() if value else '')
     db.execute('PRAGMA foreign_keys = ON')
     return db
 

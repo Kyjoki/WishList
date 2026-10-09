@@ -8,7 +8,7 @@ from typing import Literal
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from .auth import admin_user, create_session, current_user, hash_password, seed_users, verify_password
 from .db import connect, migrate
@@ -72,6 +72,17 @@ class ItemPatch(BaseModel):
 
 class NoteInput(BaseModel):
     text: str = Field(min_length=1, max_length=2000)
+
+
+class ProgressInput(BaseModel):
+    season_number: int | None = Field(default=None, ge=1, le=1000)
+    episode_number: int | None = Field(default=None, ge=1, le=10000)
+
+    @model_validator(mode='after')
+    def complete_pair(self):
+        if (self.season_number is None) != (self.episode_number is None):
+            raise ValueError('Season and episode must both be set or both be empty')
+        return self
 
 
 class LanguageInput(BaseModel):
@@ -166,7 +177,9 @@ def create_app():
             return [dict(row) for row in db.execute(sql, args).fetchall()]
 
     @app.get('/api/items/random')
-    def random_item(kind: Kind | None = None, user=Depends(current_user)):
+    def random_item(kind: Kind | None = None, genre: str = Query(default='', max_length=100),
+                    q: str = Query(default='', max_length=100), exclude: list[int] = Query(default=[]),
+                    user=Depends(current_user)):
         sql = 'SELECT * FROM items WHERE status=?'
         args = ['want']
         if kind == 'movie':
@@ -175,6 +188,17 @@ def create_app():
         elif kind:
             sql += ' AND kind=?'
             args.append(kind)
+        if genre.strip():
+            sql += ' AND INSTR(CASEFOLD(genres), ?) > 0'
+            args.append(genre.strip().casefold())
+        if q.strip():
+            sql += ' AND (INSTR(CASEFOLD(title), ?) > 0 OR INSTR(CASEFOLD(genres), ?) > 0)'
+            args.extend([q.strip().casefold()] * 2)
+        if exclude:
+            if len(exclude) > 500:
+                raise HTTPException(422, 'Too many excluded items')
+            sql += f" AND id NOT IN ({','.join('?' for _ in exclude)})"
+            args.extend(exclude)
         sql += ' ORDER BY RANDOM() LIMIT 1'
         with connect() as db:
             row = db.execute(sql, args).fetchone()
@@ -241,6 +265,9 @@ def create_app():
                 (item_id, effective_kind, effective_title, effective_year, effective_year)).fetchone()
             if possible_duplicate:
                 raise HTTPException(409, 'This title is already in the collection')
+            if effective_kind != 'series':
+                data['season_number'] = None
+                data['episode_number'] = None
             assignments = ','.join(f'{key}=?' for key in data)
             try:
                 db.execute(f'UPDATE items SET {assignments},updated_at=CURRENT_TIMESTAMP WHERE id=?', (*data.values(), item_id))
@@ -248,6 +275,16 @@ def create_app():
                 raise HTTPException(409, 'This title is already in the collection')
             if 'status' in data and data['status'] != old['status']:
                 db.execute('INSERT INTO status_events(item_id,user_id,status) VALUES (?,?,?)', (item_id, user['id'], data['status']))
+            return item_or_404(db, item_id)
+
+    @app.patch('/api/items/{item_id}/progress')
+    def update_series_progress(item_id: int, body: ProgressInput, user=Depends(current_user)):
+        with connect() as db:
+            item = item_or_404(db, item_id)
+            if item['kind'] != 'series':
+                raise HTTPException(422, 'Progress is only available for series')
+            db.execute('''UPDATE items SET season_number=?, episode_number=?, updated_at=CURRENT_TIMESTAMP
+                WHERE id=?''', (body.season_number, body.episode_number, item_id))
             return item_or_404(db, item_id)
 
     @app.delete('/api/items/{item_id}', status_code=204)
