@@ -30,12 +30,12 @@ npm install
 
 ## Запуск в Project Orbit
 
-Создайте два процесса с указанными рабочими папками и командами:
+Создайте два процесса. В поле «Рабочая папка» выберите соответствующую папку внутри своей локальной копии проекта:
 
 | Процесс | Рабочая папка | Команда |
 |---|---|---|
-| Backend | `C:\Users\Maksim\Documents\ChatGPT\site Wishlist\backend` | `.\.venv\Scripts\python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8010` |
-| Frontend | `C:\Users\Maksim\Documents\ChatGPT\site Wishlist\frontend` | `npm run dev` |
+| Backend | `папка проекта\backend` | `.\.venv\Scripts\python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8010` |
+| Frontend | `папка проекта\frontend` | `npm run dev` |
 
 Порядок: сначала backend, затем frontend. Сайт: <http://127.0.0.1:5173>. Документация API: <http://127.0.0.1:8010/docs>. Vite направляет `/api` на сервер, поэтому ключи внешних сервисов и пароли не попадают в клиентский bundle. SQLite-файл `backend/playwatch.db` создаётся автоматически. Миграции применяются при старте API.
 
